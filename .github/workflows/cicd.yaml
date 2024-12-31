@@ -40,11 +40,18 @@ jobs:
 
     - name: Run Docker container
       run: |
-        docker run -d --name test-container ${{ secrets.DOCKERHUB_USERNAME }}/webappcontainer:latest
+        docker run -d -p 32767:8080 --name test-container ${{ secrets.DOCKERHUB_USERNAME }}/webappcontainer:latest
           
     - name: Verify Docker container is running
       run: |
         docker ps  # List running containers to verify the container is up
+
+    - name: Wait for the API to start
+      run: sleep 10
+
+    - name: Test the API
+      run: curl -v http://localhost:32767/test
+
 
     - name: Stop Docker container
       run: |
